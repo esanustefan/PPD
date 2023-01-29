@@ -1,37 +1,52 @@
 package org.example;
 
+import java.util.Objects;
+
 public class Banda {
     private final Integer capacitate;
     private Integer nrObiecte;
-    private final Object capatStangaLock, capatDreaptaLock, obiecteLock;
+    private Integer nrFinishedProducers;
+    private final Integer nrProducers, nrConsumers;
+    private Integer nrFinishedConsumers; // to know when to stop if the band is empty
 
-    public Banda(Integer capacitate) {
+    public Banda(Integer capacitate, Integer nrProducers, Integer nrConsumers) {
         this.capacitate = capacitate;
         this.nrObiecte = 0;
-        this.capatStangaLock = new Object();
-        this.capatDreaptaLock = new Object();
-        this.obiecteLock = new Object();
+        this.nrProducers = nrProducers;
+        this.nrConsumers = nrConsumers;
+        this.nrFinishedProducers = 0;
+        this.nrFinishedConsumers = 0;
     }
 
-    public int puneObiecte() throws InterruptedException {
-        synchronized (capatStangaLock) {
-            while(nrObiecte + 4 > capacitate) {
-                this.wait();
+    public synchronized int puneObiecte() throws InterruptedException {
+        while(nrObiecte + 4 > capacitate) {
+            if(Objects.equals(nrFinishedConsumers, nrConsumers)) {
+                break;
             }
-            synchronized (obiecteLock) {
-                nrObiecte += 4;
-            }
-            return nrObiecte;
+            this.wait();
         }
+        nrObiecte += 4;
+        this.notifyAll();
+        return nrObiecte;
     }
 
-    public int iaObiecte() {
-        synchronized (capatDreaptaLock) {
-            synchronized (obiecteLock) {
-                nrObiecte -= 3;
+    public synchronized int iaObiecte() throws InterruptedException {
+        while (nrObiecte -3 < 0) {
+            if(Objects.equals(nrFinishedProducers, nrProducers)) {
+                break;
             }
-            this.notifyAll();
-            return nrObiecte;
+            this.wait();
         }
+        nrObiecte -= 3;
+        this.notifyAll();
+        return nrObiecte;
+    }
+
+    public synchronized void setFinishedProducers() {
+        this.nrFinishedProducers++;
+    }
+
+    public synchronized void setFinishedConsumers() {
+        this.nrFinishedConsumers++;
     }
 }

@@ -53,7 +53,6 @@ public class Nod {
                 "threadId=" + threadId +
                 ", tipOperatie='" + tipOperatie + '\'' +
                 ", nrObiecte=" + nrObiecte +
-                ", nextTranzactie=" + nextTranzactie +
                 '}';
     }
 }

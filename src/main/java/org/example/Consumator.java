@@ -14,15 +14,24 @@ public class Consumator extends Thread{
     @Override
     public void run() {
         for(int i = 0; i < 100; i++) {
-            int nrObiecte = banda.iaObiecte();
-            Nod nod = new Nod(threadId, "preia", nrObiecte);
-            listaTranzactii.addTranzactie(nod);
             try {
-                sleep(8);
+                int nrObiecte = banda.iaObiecte();
+                if(nrObiecte == 0) {
+                    break; //toti producatorii au terminat de pus obiecte, consumatorii ar tb sa termine si ei prematur
+                }
+                Nod nod = new Nod(threadId, "preia", nrObiecte);
+                listaTranzactii.addTranzactie(nod);
+                try {
+                    sleep(8);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
+        System.out.println("Done consumator");
+        banda.setFinishedConsumers();
         listaTranzactii.setFinishedRobots();
     }
 }

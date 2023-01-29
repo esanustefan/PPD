@@ -27,6 +27,8 @@ public class Producator extends Thread{
                 throw new RuntimeException(e);
             }
         }
+        System.out.println("Done producator");
+        banda.setFinishedProducers();
         listaTranzactii.setFinishedRobots();
     }
 }

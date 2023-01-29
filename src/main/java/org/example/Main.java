@@ -12,7 +12,7 @@ public class Main {
 
         Producator[] producatori = new Producator[p];
         Consumator[] consumatori = new Consumator[c];
-        Banda banda = new Banda(capacitateBanda);
+        Banda banda = new Banda(capacitateBanda, p, c);
         ListaTranzactii listaTranzactii = new ListaTranzactii(p, c);
         for(int i = 0; i < p; i++) {
             producatori[i] = new Producator(i+1, banda, listaTranzactii);

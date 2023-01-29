@@ -12,11 +12,13 @@ public class ListaTranzactii {
     }
 
     public synchronized void afiseazaTranzactii() {
+        System.out.println("AFISARE");
         Nod tranzactie = this.radacina;
         while(tranzactie != null) {
             System.out.println(tranzactie);
             tranzactie = tranzactie.getNextTranzactie();
         }
+        System.out.println();
     }
 
     public synchronized void addTranzactie(Nod nod) {
@@ -29,6 +31,7 @@ public class ListaTranzactii {
     }
 
     public synchronized boolean robotsHaveFinished() {
+        System.out.println(finishedRobots);
         return this.nrProducatori + this.nrConsumatori == this.finishedRobots;
     }
 }
